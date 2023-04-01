@@ -14,7 +14,7 @@ import os
 from pathlib import Path
 
 
-WEBSITE_ADDRESS="https://theteamapparel.com"
+WEBSITE_ADDRESS="http://191.101.81.148"
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
