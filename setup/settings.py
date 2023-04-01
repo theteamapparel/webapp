@@ -211,7 +211,7 @@ STATIC_URL = '/static/'
 LOGIN_REDIRECT_URL = '/'
 LOGIN_URL = 'login'
 
-PAYPAL_RECEIVER_EMAIL = 'sb-c5xgx6555500@business.example.com'
+PAYPAL_RECEIVER_EMAIL = 'sb-y3pu625405007@business.example.com'
 PAYPAL_TEST = True
 
 AUTHENTICATION_BACKENDS = [
