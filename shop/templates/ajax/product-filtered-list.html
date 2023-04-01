@@ -1,0 +1,64 @@
+{% load static %}
+{% load custom_tags %}
+{% for product in data %}
+        <div class="col-lg-3 col-md-6 col-sm-6 col-md-6 col-sm-6 product-box">
+            <div class="product__item sale">
+                <div class="product__item__pic set-bg" data-setbg="{{product.image.images_set.first.picture.url}}">
+                    
+                    {% if product.sell_price != product.price %}
+                    <span class="label" style="background-color: red;"><span>{{product.discount}}</span>% off</span>
+                    {% else %}
+                    <!-- <span class="label">New</span> -->
+                    {% endif %}
+                    <ul class="product__hover">
+                        <li><a href="/productattribute/{{product.id}}"><img src="{% static 'media/images/icons/search.png' %}" alt=""><span>View Product</span></a></li>
+                    </ul>
+                </div>
+                <div class="product__item__text">
+                    <h6 style="font-size: 12px; color: rgb(147, 147, 147);">{{product.category|upper}}</h6>
+                    <h6>{{product.product.title}}</h6>
+                                    
+                    <input type="hidden" value="1" class="form-control product-qty-{{product.product.id}}" id="productQty" />
+                    <input type="hidden" class="product-image-{{product.product.id}}" value="{{product.image}}" />
+                    <input type="hidden" class="product-id-{{product.product.id}}" value="{{product.product.id}}" />
+                    <input type="hidden" class="product-title-{{product.product.id}}" value="{{product.product.title}}" />
+                    <button class="add-cart add-to-cart-attribute" data-index="{{product.product.id}}">+ Add To Cart</button>
+                    <!-- <div class="rating">
+                        <i class="fa fa-star-o"></i>
+                        <i class="fa fa-star-o"></i>
+                        <i class="fa fa-star-o"></i>
+                        <i class="fa fa-star-o"></i>
+                        <i class="fa fa-star-o"></i>
+                    </div> -->
+                    <h5>
+                        <span class="">
+                            {% if user.is_authenticated %}
+                                {% get_price user product.price product.discount %}
+                            {% else %}
+                                {% get_price_session request product.price product.discount %}
+                            {% endif %}
+                        </span>
+                        <span class="" style="text-decoration: line-through; font-size: 20px; font-weight: 400; color: #b7b7b7; padding-left: 8px;">
+                            {% if user.is_authenticated %}
+                                {% get_discount_price user product.price %}
+                            {% else %}
+                                {% get_discount_price_session request product.price %}
+                            {% endif %}
+                        </span>
+                    </h5>
+
+                    <div class="product__color__select">
+                            <label class="" style="background-color:{{product.color.color_code}}" for="sp-1">
+                                <input type="radio" id="{{product.color.color_code}}">
+                            </label>
+                    <div class="product__size__select" style="padding-right: 20px;">  
+                        <label class="" for="{{product.size.size_code}}">{{product.size.size_code}}
+                        </label>
+                    </div>
+                    </div>
+                </div>
+            </div>
+        </div> 
+{% endfor %}
+
+<script src="{% static 'js/main.js' %}"></script>

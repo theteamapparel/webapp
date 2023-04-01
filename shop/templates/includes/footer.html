@@ -1,0 +1,76 @@
+{% load static %}
+<!-- Footer Section Begin -->
+<footer class="footer">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-3 col-md-6 col-sm-6">
+                <div class="footer__about">
+                    <div class="footer__logo"><h4 style="color: white; letter-spacing: 0.2em; font-weight: 700;">THE TEAM</h4>
+                        <p style="letter-spacing: 1em; font-weight: 300;">APPAREL</p>
+                    </div>
+                    <p>The customer is at the heart of our unique business model, which includes design.</p>
+                    <!-- <a href="#"><img src="{% static 'media/images/icons/payment_options.png' %}" alt=""></a> -->
+                </div>
+            </div>
+            <div class="col-lg-2 offset-lg-1 col-md-3 col-sm-6">
+                <div class="footer__widget">
+                    <h6>Quick Links</h6>
+                    <ul>
+                        <li><a href="/">Home</a></li>
+                        <li><a href="{% url 'product-list' %}">Shop</a></li>
+                        <li><a href="{% url 'category-list' %}">Categories</a></li>
+                        <li><a href="{% url 'homepage' %}">Blog</a></li>
+                        <li><a href="#">Contact Us</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="col-lg-2 col-md-3 col-sm-6">
+                <div class="footer__widget">
+                    <h6>Important Links</h6>
+                    <ul>
+                        <li><a href="{% url 'privacy_policy' %}">Privacy and Policy</a></li>
+                        <li><a href="{% url 'return_policy' %}">Return Policy</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="col-lg-3 offset-lg-1 col-md-6 col-sm-6">
+                <div class="footer__widget">
+                    <h6>NewLetter</h6>
+                    <div class="footer__newslatter">
+                        <p>Be the first to know about new arrivals, look books, sales & promos!</p>
+                        <form action="{% url 'subscribe' %}" method="post">
+                            {% csrf_token %}
+                            <input id="name" name="name" type="text" placeholder="Your Name">
+                            <input id="email" name="email" type="email" placeholder="Your Email">
+                            <button type="submit"><span style="margin-right: 5px;" class="icon_mail_alt"></span>Subscribe</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-12 text-center">
+                <div class="footer__copyright__text">
+                    <!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. -->
+                    <p>Copyright ©
+                        <script>
+                            document.write(new Date().getFullYear());
+                        </script>
+                        All rights reserved | This template is made with <i class="fa fa-heart-o"
+                        aria-hidden="true"></i> by <a href="https://colorlib.com" target="_blank">Colorlib</a>
+                    </p>
+                    <!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. -->
+                    <!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0.
+                    <p>Copyright ©
+                        <script>
+                            document.write(new Date().getFullYear());
+                        </script>.
+                        All rights reserved | <a href="/" target="_blank">The Team Apparel</a>
+                    </p>
+                    Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. -->
+                </div>
+            </div>
+        </div>
+    </div>
+</footer>
+<!-- Footer Section End -->

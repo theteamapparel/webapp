@@ -1,0 +1,141 @@
+<!-- Offcanvas Menu Begin -->
+{% load static %}
+{% load custom_tags %}
+<div class="offcanvas-menu-overlay"></div>
+<div class="offcanvas-menu-wrapper" style="padding-top: 100px;">
+    
+
+
+    <div class="header__top__right">
+        {% if user.is_authenticated %}
+        <div class="header__top__hover">
+            <span><i class="fa fa-user"></i> My Account <i class="arrow_carrot-down"></i></span>
+            <ul>
+                <li><a class="dropdown-item" href="{% url 'my_dashboard' %}">Dashboard</a></li>
+                <li><a class="dropdown-item" href="{% url 'logout' %}">Logout</a></li>
+            </ul>
+        </div>
+        {% else %}
+        <div class="header__top__links">
+            <a href="{% url 'login' %}">LOGIN</a>
+            <a href="{% url 'register' %}">SIGNUP</a>
+        </div>
+        {% endif %}
+    </div>
+
+
+
+    <div class="offcanvas__option">
+        {% if user.is_authenticated %}
+        <div class="offcanvas__top__hover">
+            <span><i class="fa fa-user"></i> My Account <i class="arrow_carrot-down"></i></span>
+            <ul>
+                <li><a class="dropdown-item" href="{% url 'my_dashboard' %}" style="color: white;">Dashboard</a></li>
+                <li><a class="dropdown-item" href="{% url 'logout' %}" style="color: white;">Logout</a></li>
+            </ul>
+        </div>
+        {% else %}
+        <div class="offcanvas__links">
+            <a href="{% url 'login' %}">LOGIN</a>
+            <a href="{% url 'register' %}">SIGNUP</a>
+        </div>
+        {% endif %}
+        <div class="offcanvas__top__hover">
+            <span>{% if user.is_authenticated %}{% get_selected_currency user %}{% else %}{% get_selected_currency_session request %} {% endif %}<i class="arrow_carrot-down"></i></span>
+            <ul>
+                {% get_currency_options as currency_options %}
+                {% for currencies in currency_options %}
+                <li><a class="dropdown-item choose-currency" data-currency="{{currencies.id}}">{{currencies.currency_short_name}}</a></li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+    <div class="offcanvas__nav__option">
+        <a href="#" class="search-switch"><img src="{% static 'media/images/icons/search.png' %}" alt=""></a>
+        <a href="#"><img src="{% static 'media/images/icons/heart.png' %}" alt=""></a>
+        <a href="{% url 'cart' %}"><img src="{% static 'media/images/icons/cart.png' %}" alt=""> <span class="cart-list">{% if user.is_authenticated %}{% get_cart_items_length user %}{% else %}{{request.session.cartdata|length}}{% endif %}</span></a>
+        <div class="price"><span class="cart-list">{% if user.is_authenticated %}{% get_cart_items_total_amt user %}{% else %}{% get_cart_items_total_amt_session request %}{% endif %}</span></div>
+    </div>
+    <div id="mobile-menu-wrap"></div>
+    <div class="offcanvas__text">
+        <p>✨New Collection Coming Soon.</p>
+    </div>
+</div>
+<!-- Offcanvas Menu End -->
+
+<!-- Header Section Begin -->
+<header class="header" style="border-bottom: 1px solid black; position: fixed; z-index:9999; width: 100%; top: 0px; left: 0px;">
+    <div class="header__top">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-6 col-md-7">
+                    <div class="header__top__left">
+                        <p>✨New Collection Coming Soon.</p>
+                    </div>
+                </div>
+                <div class="col-lg-6 col-md-5">
+                    <div class="header__top__right">
+                        {% if user.is_authenticated %}
+                        <div class="header__top__hover">
+                            <span><i class="fa fa-user"></i> My Account <i class="arrow_carrot-down"></i></span>
+                            <ul>
+                                <li><a class="dropdown-item" href="{% url 'my_dashboard' %}">Dashboard</a></li>
+                                <li><a class="dropdown-item" href="{% url 'logout' %}">Logout</a></li>
+                            </ul>
+                        </div>
+                        {% else %}
+                        <div class="header__top__links">
+                            <a href="{% url 'login' %}">LOGIN</a>
+                            <a href="{% url 'register' %}">SIGNUP</a>
+                        </div>
+                        {% endif %}
+                        <div class="header__top__hover">
+                            <span>{% if user.is_authenticated %}{% get_selected_currency user %}{% else %}{% get_selected_currency_session request %} {% endif %}<i class="arrow_carrot-down"></i></span>
+                            <ul>
+                                {% get_currency_options as currency_options %}
+                                {% for currencies in currency_options %}
+                                <li><a class="dropdown-item choose-currency" data-currency="{{currencies.id}}">{{currencies.currency_short_name}}</a></li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-3 col-md-3">
+                <div class="header__logo">
+                    <a href="/"><img src="{% static 'media/images/logo.png' %}" alt="The Team Apparel" width="120"></a>
+                </div>
+            </div>
+            <div class="col-lg-6 col-md-6">
+                <nav class="header__menu mobile-menu">
+                    <ul>
+                        {% url 'home' as url %}
+                        <li {% if request.path == url %}class="active"{% endif %}><a href="{{url}}">Home</a></li>
+                        {% url 'product-list' as url %}
+                        <li {% if request.path == url %}class="active"{% endif %}><a href="{{ url }}">Shop</a></li>
+                        {% url 'category-list' as url %}
+                        <li {% if request.path == url %}class="active"{% endif %}><a href="{{ url }}">Categories</a></li>
+                        {% url 'homepage' as url %}
+                        <li {% if request.path == url %}class="active"{% endif %}><a href="{{ url }}">Blog</a></li>
+                        {% url 'contact' as url %}
+                        <li {% if request.path == url %}class="active"{% endif %}><a href="{{ url }}">Contact</a></li>
+                    </ul>
+                </nav>
+            </div>
+            <div class="col-lg-3 col-md-3">
+                <div class="header__nav__option">
+                    <a href="#" class="search-switch"><img src="{% static 'media/images/icons/search.png' %}" alt=""></a>
+                    {% if user.is_authenticated %}<a href="{% url 'my_wishlist' %}"><img src="{% static 'media/images/icons/heart.png' %}" alt=""><span>{% get_wishlist user %}</span></a>{% endif %}
+                    <a href="{% url 'cart' %}"><img src="{% static 'media/images/icons/cart.png' %}" alt=""> <span class="cart-list">{% if user.is_authenticated %}{% get_cart_items_length user %}{% else %}{{request.session.cartdata|length}}{% endif %}</span></a>
+                    <div class="price"><span class="cart-list">{% if user.is_authenticated %}{% get_cart_items_total_amt user %}{% else %}{% get_cart_items_total_amt_session request %}{% endif %}</span></div>
+                </div>
+            </div>
+        </div>
+        <div class="canvas__open"><i class="fa fa-bars"></i></div>
+    </div>
+</header>
+<!-- Header Section End -->

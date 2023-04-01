@@ -1,0 +1,147 @@
+{% extends 'includes/base.html' %}
+{% load custom_tags %}
+{% load static %}
+{% block content %}
+<!-- Breadcrumb Section Begin -->
+<section class="breadcrumb-option"style="border-bottom: 1px solid black;">
+	<div class="container">
+		<div class="row">
+			<div class="col-lg-12">
+				<div class="breadcrumb__text">
+					<h4>Search</h4>
+					<div class="breadcrumb__links">
+						<a href="{% url 'home' %}">Home</a>
+						<a href="/">Search</a>
+						<span>{{request.GET.q}}</span>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</section>
+<!-- Breadcrumb Section End -->
+
+<main class="container my-4">
+	<!-- Featured Products -->
+	<h3 class="my-4 border-bottom pb-1"><span class="text-muted">Search result for</span> {{request.GET.q}}</h3>
+	<div class="row">
+    {% for product in data %}
+	<div class="col-lg-3 col-md-6 col-sm-6 col-md-6 col-sm-6 product-box">
+		<div class="product__item sale get_product_id" data-productid="{{product.id}}">
+			<div class="product__item__pic set-bg product-home-image-{{product.id}}" data-setbg="{{product.productattribute_set.first.image.images_set.first.picture.url}}">
+				{% get_product_image product as get_image %}
+				{% for images in get_image %}
+				<div style="display: none;" class="image{{images.color__id}}{{product.id}}" data-image-{{product.id}}="{{images.image__images__picture}}"></div>
+				{% endfor %}	
+				{% if product.productattribute_set.first.sell_price != product.productattribute_set.first.price %}
+				<span class="label" style="background-color: red;"><span class="product-discount-label-{{product.id}}">{{product.productattribute_set.first.discount}}</span>% off</span>
+				{% else %}
+				<!-- <span class="label">New</span> -->
+				{% endif %}
+				<ul class="product__hover">
+					{% if user.is_authenticated %}
+					<li><button class="add-wishlist" data-product="{{product.id}}" style="padding: 0px; border: 0px;"><img src="{% static 'media/images/icons/heart.png' %}" alt=""></button></li>
+					{% else %}
+					{% endif %}
+					<li><a href="/product/{{product.slug}}/{{product.id}}"><img src="{% static 'media/images/icons/search.png' %}" alt=""><span>View Product</span></a></li>
+				</ul>
+			</div>
+			<div class="product__item__text">
+				<h6 style="font-size: 12px; color: rgb(147, 147, 147);">{{product.category|upper}}</h6>
+				<h6>{{product.title}}</h6>
+								
+				<input type="hidden" value="1" class="form-control product-qty-{{product.id}}" id="productQty" />
+				<input type="hidden" class="product-image-{{product.id}}" value="{{product.productattribute_set.first.image}}" />
+				<input type="hidden" class="product-id-{{product.id}}" value="{{product.id}}" />
+				<input type="hidden" class="product-title-{{product.id}}" value="{{product.title}}" />
+				<button class="add-cart add-to-cart" data-index="{{product.id}}">+ Add To Cart</button>
+				<div class="rating">
+					{% get_avg_product_rating product as avg_reviews %}
+					{% if avg_reviews.avg_rating == None %}
+					<i class="fa fa-star-o"></i>
+					<i class="fa fa-star-o"></i>
+					<i class="fa fa-star-o"></i>
+					<i class="fa fa-star-o"></i>
+					<i class="fa fa-star-o"></i>
+					<i class="fa fa-star-i"></i>							
+					{% elif avg_reviews.avg_rating == 1 %}
+					<i class="fa fa-star"></i>
+					<i class="fa fa-star-o"></i>
+					<i class="fa fa-star-o"></i>
+					<i class="fa fa-star-o"></i>
+					<i class="fa fa-star-o"></i>
+					<i class="fa fa-star-i"></i>	
+					{% elif avg_reviews.avg_rating == 2 %}
+					<i class="fa fa-star"></i>
+					<i class="fa fa-star"></i>
+					<i class="fa fa-star-o"></i>
+					<i class="fa fa-star-o"></i>
+					<i class="fa fa-star-o"></i>
+					<i class="fa fa-star-i"></i>	
+					{% elif avg_reviews.avg_rating == 3 %}
+					<i class="fa fa-star"></i>
+					<i class="fa fa-star"></i>
+					<i class="fa fa-star"></i>
+					<i class="fa fa-star-o"></i>
+					<i class="fa fa-star-o"></i>
+					<i class="fa fa-star-i"></i>	
+					{% elif avg_reviews.avg_rating == 4 %}
+					<i class="fa fa-star"></i>
+					<i class="fa fa-star"></i>
+					<i class="fa fa-star"></i>
+					<i class="fa fa-star"></i>
+					<i class="fa fa-star-o"></i>
+					<i class="fa fa-star-i"></i>	
+					{% elif avg_reviews.avg_rating == 5 %}
+					<i class="fa fa-star"></i>
+					<i class="fa fa-star"></i>
+					<i class="fa fa-star"></i>
+					<i class="fa fa-star"></i>
+					<i class="fa fa-star"></i>
+					<i class="fa fa-star-i"></i>	
+					{% endif %}
+				</div>
+				<h5>
+					<span class="product-price-{{product.id}}">
+						{% if user.is_authenticated %}
+							{% get_price user product.productattribute_set.first.price product.productattribute_set.first.discount %}
+						{% else %}
+							{% get_price_session request product.productattribute_set.first.price product.productattribute_set.first.discount %}
+						{% endif %}
+					</span>
+					{% if product.productattribute_set.first.discount == 0 %}
+					{% else %}
+					<span class="product-discount-{{product.id}}" style="text-decoration: line-through; font-size: 20px; font-weight: 400; color: #b7b7b7; padding-left: 8px;">
+						{% if user.is_authenticated %}
+							{% get_discount_price user product.productattribute_set.first.price %}
+						{% else %}
+							{% get_discount_price_session request product.productattribute_set.first.price %}
+						{% endif %}
+					</span>
+					{% endif %}
+				</h5>
+
+				<div class="product__color__select">
+					{% get_product_color product.id as product_colors %}
+					{% for color in product_colors%}
+						<label class="choose-color" data-color="{{color.color__id}}" style="background-color: {{color.color__color_code}}" for="sp-1">
+							<input type="radio" id="{{color.color__color_code}}">
+						</label>
+					{% endfor %}
+					
+				<div class="product__size__select">  
+					{% get_product_size product.id as product_sizes %}
+					{% for size in product_sizes %}
+					<label class="choose-size color{{size.color__id}}" data-size="{{size.size__id}}" data-price-{{product.id}}="{% if user.is_authenticated %}{% get_price user size.price size.discount %}{% else %}{% get_price_session request size.price size.discount %}{% endif %}" data-discount-{{product.id}}="{% if user.is_authenticated %}{% get_discount_price user size.price %}{% else %}{% get_discount_price_session request size.price %}{% endif %}" data-discountlabel-{{product.id}}="{{size.discount}}" for="{{size.size__size_code}}">{{size.size__size_code}}
+						<input type="radio" id="{{size.size__size_code}}">
+					</label>
+					{% endfor %}
+				</div>
+				</div>
+			</div>
+		</div>
+	</div> 
+{% endfor %}
+	</div>
+</main>
+{% endblock %}

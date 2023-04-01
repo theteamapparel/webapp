@@ -1,0 +1,31 @@
+{% if messages %}
+    {% for message in messages %}
+        {% if message.tags == 'success' %}
+            <div id="alert" class="alert alert-success alert-dismissible" style="position: fixed; z-index:9999; width: 100%; margin-top: 40px; " role="alert">
+                <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+                {{ message|safe|escape }}
+            </div>
+        {% elif message.tags == 'error' %}
+            <div id="alert" class="alert alert-danger alert-dismissible" style="position: fixed; z-index:9999; width: 100%; margin-top: 40px; " role="alert">
+                <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+                {{ message|safe|escape }}
+            </div>
+        {% elif message.tags == 'info' %}
+            <div id="alert" class="alert alert-info alert-dismissible" style="position: fixed; z-index:9999; width: 100%; margin-top: 40px; " role="alert">
+                <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+                {{ message|safe|escape }}
+            </div>
+        {% elif message.tags == 'warning' %}
+            <div id="alert" class="alert alert-warning alert-dismissible" style="position: fixed; z-index:9999; width: 100%; margin-top: 40px; " role="alert">
+                <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+                {{ message|safe|escape }}
+            </div>
+        {% endif %}
+    {% endfor %}
+    <script>
+        $("#alert").fadeTo(2000, 500).slideUp(500, function(){
+            $("#alert").slideUp(500);
+        });
+
+    </script>
+{% endif %}

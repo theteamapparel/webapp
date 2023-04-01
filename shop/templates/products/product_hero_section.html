@@ -1,0 +1,26 @@
+  <!-- Hero Section Begin -->
+  <section class="hero">
+    <div class="hero__slider owl-carousel">
+    {% for banner in banners %}
+        <div class="hero__items set-bg" data-setbg="/media/{{banner.img}}">
+            <div class="container">
+                <div class="row">
+                    <div class="col-xl-5 col-lg-7 col-md-8">
+                        <div class="hero__text">
+                            <!-- <h6>Summer Collection</h6> -->
+                            <h2>{{banner.title}}</h2>
+                            <p>{{banner.desc}}</p>
+                            <a href="{% url 'product_discount' banner.id %}" class="primary-btn">Shop now <span class="arrow_right"></span></a>
+                            <div class="hero__social">
+                                <a href="https://www.facebook.com/TheteamApparell/"><i class="fa fa-facebook"></i></a>
+                                <a href="https://www.instagram.com/theteam_apparel/"><i class="fa fa-instagram"></i></a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    {% endfor %}
+    </div>
+</section>
+<!-- Hero Section End -->

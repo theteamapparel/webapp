@@ -1,0 +1,106 @@
+{% load static %}
+<script type="text/javascript" src="{% static 'product-filter.js' %}"></script>
+
+
+<div class="shop__sidebar__accordion">
+	<div class="accordion" id="accordionExample">
+		<div class="card">
+			<div class="card-heading">
+				<a data-toggle="collapse" data-target="#collapseThree">Filter Price</a>
+			</div>
+			<div id="collapseThree" class="collapse show" data-parent="#accordionExample">
+				<div class="card-body">
+					<div class="shop__sidebar__price">
+						<ul>			
+						<div class="list-group list-group-flush">
+							<li class="list-group-item">
+								<input type="range" value="{{minMaxPrice.price__max}}" max={{minMaxPrice.price__max}} min={{minMaxPrice.price__min}} id="rangeInput" oninput="maxPrice.value=this.value" />
+								<p>{{minMaxPrice.price__min}}-{{minMaxPrice.price__max}}</p>
+							</li>
+							<li class="list-group-item">
+								Max: <input type="number" value="{{minMaxPrice.price__max}}" max={{minMaxPrice.price__max}} min={{minMaxPrice.price__min}} class="form-control" id="maxPrice" onkeyup="rangeInput.value=this.value" id="maxPrice" />
+								<button id="priceFilterBtn" class="btn btn-info btn-sm mt-1">Filter</button>
+							</li>
+						</div>
+						</ul>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="card">
+			<div class="card-heading">
+				<a data-toggle="collapse" data-target="#collapseOne">Categories</a>
+			</div>
+			<div id="collapseOne" class="collapse show" data-parent="#accordionExample">
+				<div class="card-body">
+					<div class="shop__sidebar__categories">
+						<ul class="nice-scroll" style="margin-bottom: -100px;">		
+							{% for cat in cats %}
+							<li class="list-group-item">
+								<input class="filter-checkbox" data-filter="category" value="{{cat.category__id}}" type="checkbox" />&nbsp;
+								{{cat.category__title}}
+							</li>
+							{% endfor %}
+						</ul>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="card">
+			<div class="card-heading">
+				<a data-toggle="collapse" data-target="#collapseTwo">Brands</a>
+			</div>
+			<div id="collapseTwo" class="collapse show" data-parent="#accordionExample">
+				<div class="card-body">
+					<div class="shop__sidebar__brand">
+						<ul>		
+							{% for brand in brands %}
+							<li class="list-group-item">
+								<input class="filter-checkbox" data-filter="brand" value="{{brand.brand__id}}" type="checkbox" />&nbsp;
+								{{brand.brand__title}}
+							</li>
+							{% endfor %}
+						</ul>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="card">
+			<div class="card-heading">
+				<a data-toggle="collapse" data-target="#collapseFour">Size</a>
+			</div>
+			<div id="collapseFour" class="collapse show" data-parent="#accordionExample">
+				<div class="card-body">
+					<div class="shop__sidebar__size">
+						{% for size in sizes %}
+						<label for="{{size.size__title}}">{{size.size__title}}
+							<input class="filter-checkbox" data-filter="size" value="{{size.size__id}}" type="radio" id="{{size.size__title}}">
+						</label>
+						{% endfor %}
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="card">
+			<div class="card-heading">
+				<a data-toggle="collapse" data-target="#collapseFive">Colors</a>
+			</div>
+			<div id="collapseFive" class="collapse show" data-parent="#accordionExample">
+				<div class="card-body">
+					<div class="shop__sidebar__color">	
+						{% for color in colors %}
+						<li class="list-group-item">
+							<input class="filter-checkbox" data-filter="color" value="{{color.color__id}}" type="checkbox" />&nbsp;
+							<button class="btn" style="background-color: {{color.color__color_code}}; margin-top: -5px;"></button>
+						</li>
+						<!-- <label class="color" data-color="{{color.color__id}}" style="background-color: {{color.color__color_code}}" for="sp-1">
+							<input class="filter-checkbox" data-filter="color" value="{{color.color__id}}" type="checkbox" >
+							<button class="btn" style="background-color: {{color.color__color_code}}; margin-top: -5px;"></button>
+						</label> -->
+						{% endfor %}
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>

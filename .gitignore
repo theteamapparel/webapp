@@ -1,0 +1,4 @@
+setup/settings.py
+__pycache__/
+.pyc
+.env

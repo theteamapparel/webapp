@@ -1,0 +1,19 @@
+ <!-- <p>or continue with social account</p>
+
+                    <div class="input-field google_button">
+                        <a href="{% provider_login_url 'google'%}?next=/">
+                                Google
+                    </a>
+                    </div> -->
+
+
+
+register.html
+=====
+<!-- <p>or continue with social account</p>
+
+            <div class="input-field google_button">
+                <a href="{% provider_login_url 'google'%}?next=/">
+                        Google
+                </a>
+            </div> -->

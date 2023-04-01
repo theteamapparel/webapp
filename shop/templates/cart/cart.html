@@ -1,0 +1,181 @@
+{% extends 'includes/base.html' %}
+{% load static %}
+{% load custom_tags %}
+{% block content %}
+ <!-- Breadcrumb Section Begin -->
+ <section class="breadcrumb-option">
+	<div class="container">
+		<div class="row">
+			<div class="col-lg-12">
+				<div class="breadcrumb__text">
+					<h4>Shopping Cart</h4>
+					<div class="breadcrumb__links">
+						<a href="./index.html">Home</a>
+						<a href="./shop.html">Shop</a>
+						<span>Shopping Cart</span>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</section>
+<!-- Breadcrumb Section End -->
+
+<!-- Shopping Cart Section Begin -->
+<section class="shopping-cart spad" id="cartList">
+	<div class="container">
+		<h3 class="my-4 border-bottom pb-1">Cart ({% if user.is_authenticated %}{{cart_items|length}}{% else %}{{totalitems}}{% endif %})</h3>
+		<div class="row">
+			<div class="col-lg-8">
+				<div class="shopping__cart__table">	
+					<table>
+						<thead>
+							<tr>
+								<th>Product</th>
+								<th>Color</th>
+								<th>Size</th>
+								<th>Quantity</th>
+								<th>Total</th>
+								<th></th>
+							</tr>
+						</thead>
+						<tbody>
+							{% if user.is_authenticated %}
+								{% for data in cart_items %}
+								{% multiplier data.product_attribute.sell_price data.qty as sell_prices%}
+								<tr>
+									
+									{% if messages %}
+    									{% for message in messages %}
+        									{% if message.tags == 'error' %}
+									<p id="error-message" style="margin-bottom: -50px; padding-top: 25px; color: red;">{{ message|safe|escape }}</p>
+											{% endif %}
+										{% endfor %}
+									{% endif %}
+									<td class="product__cart__item">
+										<div class="product__cart__item__pic">
+											<img src="{{data.product_attribute.image.images_set.first.picture.url}}" width="80px" alt="">
+										</div>
+										<div class="product__cart__item__text">
+											<h6><a href="/product/{{data.product_attribute.product.slug|slugify}}/{{data.product_attribute.product.id}}">{{data.product_attribute.product.title}}</a></h6>
+											<h5>{% currency_converter user data.product_attribute.sell_price %}</h5>
+										</div>
+									</td>
+									<th>
+										<div style="width: 40px; height: 40px; border-radius: 5px; margin-top: 20%; background-color:{{data.product_attribute.color.color_code}};">
+										</div>
+										<p>{{data.product_attribute.color}}</p>
+										
+									</th>
+									<th>{{data.product_attribute.size}}</th>
+									<td class="quantity__item">
+										<div class="quantity">
+											<div class="pro-qty-2">
+												<span class="fa fa-angle-left dec qtybtn update-item" data-item="{{data.id}}"></span>
+												<input type="number" class="product-qty-{{data.id}}" readonly value="{{data.qty}}"">
+												<span class="fa fa-angle-right inc qtybtn update-item" data-item="{{data.id}}"></span>
+											</div>
+										</div>
+										<p style="margin-bottom: -50px; padding-top: 25px;">Stock: {{data.product_attribute.quantity}}</p>
+									</td>		
+									<td class="cart__price">{% currency_converter user sell_prices %}</td>
+									<td class="cart__close delete-item" data-item="{{data.id}}"><i class="fa fa-close"></i></td>
+								</tr>
+								
+								{% endfor %}
+
+							{% else %}
+								{% for product_id,item in cart_data.items %}
+								{% get_obj product_id "sell_price" as sell_prices %}
+								{% multiplier sell_prices item.qty as item_total %}
+								<tr>
+									
+									{% if messages %}
+    									{% for message in messages %}
+        									{% if message.tags == 'error' %}
+									<p id="error-message" style="margin-bottom: -50px; padding-top: 25px; color: red;">{{ message|safe|escape }}</p>
+											{% endif %}
+										{% endfor %}
+									{% endif %}
+									<td class="product__cart__item">
+										<div class="product__cart__item__pic">
+											<img src="/media/{% get_cart_image product_id "image" %}" width="80px" alt="">
+										</div>
+										<div class="product__cart__item__text">
+											{% get_obj product_id "product" as slug %}
+											<h6><a href="/product/{{slug.slug}}/{{slug.id}}">{{item.title}}</a></h6>
+											<h5>{% currency_converter_session request sell_prices %}</h5>
+										</div>
+									</td>
+									<th>
+										<div style="width: 40px; height: 40px; border-radius: 5px; margin-top: 20%; background-color:{% get_color product_id "color" %};">
+										</div>
+										<p>{% get_obj product_id "color" %}</p>
+									</th>
+									<th>{% get_size product_id "size" %}</th>
+									<td class="quantity__item">
+										<div class="quantity">
+											<div class="pro-qty-2">
+												<span class="fa fa-angle-left dec qtybtn update-item" data-item="{{product_id}}"></span>
+												<input type="number" class="product-qty-{{product_id}}" readonly value="{{item.qty}}">
+												<span class="fa fa-angle-right inc qtybtn update-item" data-item="{{product_id}}"></span>
+											</div>
+										</div>
+										<p style="margin-bottom: -50px; padding-top: 25px;">Stock: {% get_obj product_id "quantity" %}</p>
+									</td>
+									<td class="cart__price">{% currency_converter_session request item_total %}</td>
+									<td class="cart__close delete-item" data-item="{{product_id}}"><i class="fa fa-close"></i></td>
+								</tr>							
+								{% endfor %}
+							{% endif %}	
+						</tbody>
+					</table>
+				</div>
+				<div class="row">
+					<div class="col-lg-6 col-md-6 col-sm-6">
+						<div class="continue__btn">
+							<a href="{% url 'product-list' %}">Continue Shopping</a>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="col-lg-4">
+				<!-- <div class="cart__discount">
+					<h6>Discount codes</h6>
+					<form action="#">
+						<input type="text" placeholder="Coupon code">
+						<button type="submit">Apply</button>
+					</form>
+				</div> -->
+					<div class="cart__total">
+						<h6>Cart total</h6>
+						<ul>
+							<li>Subtotal 
+								<span>
+									{% if user.is_authenticated %}
+										{% currency_converter user total_amt %}
+									{% else %}
+										{% currency_converter_session request total_amt %}
+									{% endif %}
+								</span>
+							</li>
+							<li>Total 
+								<span>
+									{% if user.is_authenticated %}
+										{% currency_converter user total_amt %}
+									{% else %}
+										{% currency_converter_session request total_amt %}
+									{% endif %}
+								</span>
+							</li>
+						</ul>
+						{% if total_amt %}
+						<a href="{% url 'checkout' %}" class="primary-btn">Proceed to checkout</a>
+						{% endif %}
+					</div>
+			</div>
+		</div>
+	</div>
+</section>
+<!-- Shopping Cart Section End -->
+{% endblock %}

@@ -1,0 +1,425 @@
+{% extends 'includes/base.html' %}
+{% load static %}
+{% load custom_tags %}
+{% block content %}
+
+<!-- Breadcrumb Section Begin -->
+<section class="breadcrumb-option"style="border-bottom: 1px solid black;">
+	<div class="container">
+		<div class="row">
+			<div class="col-lg-12">
+				<div class="breadcrumb__text">
+					<h4>Product Details</h4>
+					<div class="breadcrumb__links">
+						<a href="{% url 'home' %}">Home</a>
+						<a href="{% url 'product-list' %}">Products</a>
+						<a href="">Product Details</a>
+						<span>{{data.title}}</span>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</section>
+<!-- Breadcrumb Section End -->
+
+<!-- Shop Details Section Begin -->
+<section class="shop-details get_product_id" data-productid="{{data.id}}" >
+	<div class="product__details__pic">
+		<div class="container-fluid">
+			<div class="row">
+				<div class="col-lg-6 col-md-8">
+					<div class="tab-content">
+						<div class="tab-pane active" id="tabs-1" role="tabpanel">
+							<div class="product__details__pic__item">
+								<img src="{{data.productattribute_set.first.image.images_set.first.picture.url}}" alt="">
+							</div>
+						</div>
+						{% for images in product_pictures %}
+						<div class="tab-pane" id="tabs-{{forloop.counter}}" role="tabpanel">
+							<div class="product__details__pic__item choose-image image{{images.color__id}}">
+								<img src="/media/{{images.image__images__picture}}" alt="">
+							</div>
+						</div>
+						{% endfor %}
+					</div>
+					
+					<ul class="nav nav-tabs" role="tablist">
+						{% for images in product_pictures %}
+						<li class="nav-item choose-image image{{images.color__id}}">
+							<a class="nav-link" data-toggle="tab" href="#tabs-{{forloop.counter}}" role="tab">
+								<div class="product__thumb__pic set-bg" data-setbg="/media/{{images.image__images__picture}}">
+								</div>
+							</a>
+						</li>
+						{% endfor %}
+					</ul>
+				</div>
+				
+				<div class="col-lg-6 col-md-9" style="background-color: white; padding:50px;">
+				
+					
+					<div class="row d-flex">
+						<div class="col-lg-8">
+							<div class="product__details__text">
+								<h4>{{data.title}}</h4>
+								<div class="rating">
+									{% if avg_reviews.avg_rating == None %}
+									<i class="fa fa-star-o"></i>
+									<i class="fa fa-star-o"></i>
+									<i class="fa fa-star-o"></i>
+									<i class="fa fa-star-o"></i>
+									<i class="fa fa-star-o"></i>							
+									{% elif avg_reviews.avg_rating == 1 %}
+									<i class="fa fa-star"></i>
+									<i class="fa fa-star-o"></i>
+									<i class="fa fa-star-o"></i>
+									<i class="fa fa-star-o"></i>
+									<i class="fa fa-star-o"></i>
+									{% elif avg_reviews.avg_rating == 2 %}
+									<i class="fa fa-star"></i>
+									<i class="fa fa-star"></i>
+									<i class="fa fa-star-o"></i>
+									<i class="fa fa-star-o"></i>
+									<i class="fa fa-star-o"></i>
+									{% elif avg_reviews.avg_rating == 3 %}
+									<i class="fa fa-star"></i>
+									<i class="fa fa-star"></i>
+									<i class="fa fa-star"></i>
+									<i class="fa fa-star-o"></i>
+									<i class="fa fa-star-o"></i>
+									{% elif avg_reviews.avg_rating == 4 %}
+									<i class="fa fa-star"></i>
+									<i class="fa fa-star"></i>
+									<i class="fa fa-star"></i>
+									<i class="fa fa-star"></i>
+									<i class="fa fa-star-o"></i>
+									{% elif avg_reviews.avg_rating == 5 %}
+									<i class="fa fa-star"></i>
+									<i class="fa fa-star"></i>
+									<i class="fa fa-star"></i>
+									<i class="fa fa-star"></i>
+									<i class="fa fa-star"></i>
+									{% endif %}
+									<span> - 5 Reviews</span>
+								</div>
+									
+								<th></th>
+								<h3>
+									<span class="product-price-{{data.id}}">
+										{% if user.is_authenticated %}
+											{% get_price user data.productattribute_set.first.price data.productattribute_set.first.discount %}
+										{% else %}
+											{% get_price_session request data.productattribute_set.first.price data.productattribute_set.first.discount %}
+										{% endif %}
+									</span>
+									<span class="product-discount-{{data.id}}" style="text-decoration: line-through; font-size: 20px; font-weight: 400; color: #b7b7b7; padding-left: 8px;">
+										{% if user.is_authenticated %}
+											{% get_discount_price user data.productattribute_set.first.price %}
+										{% else %}
+											{% get_discount_price_session request data.productattribute_set.first.price %}
+										{% endif %}
+									</span>
+								</h3>
+								<span style="background-color: red; padding: 5px;"><span class="product-discount-label-{{data.id}}">{{data.productattribute_set.first.discount}}</span>% off</span><br>
+								<br><h4>Stock: <span style="color: green;" class="product-stock-{{data.id}}">{{data.productattribute_set.first.quantity}}</span></h4><br>
+								
+								<p>{{data.description | safe | truncatewords:30}} <span>Sroll up for more</span></p>
+								<div class="product__details__option">
+									<div class="product__details__option__color" style="padding-bottom: 20px;">
+										<span>Color:</span>	
+										   {% for color in colors %}
+											<label class="choose-color" data-color="{{color.color__id}}" style="background-color: {{color.color__color_code}}" for="sp-1">
+												<input type="radio" id="">
+											</label>
+											{% endfor %}
+										<br>
+									</div>
+									<div class="product__details__option__size">	
+										<span>Size:</span>	
+										{% for size in sizes %}
+										<label class="choose-size color{{size.color__id}}" data-size="{{size.size__id}}" data-price-{{data.id}}="{% if user.is_authenticated %}{% get_price user size.price size.discount %}{% else %}{% get_price_session request size.price size.discount %}{% endif %}" data-discount-{{data.id}}="{% if user.is_authenticated %}{% get_discount_price user size.price %}{% else %}{% get_discount_price_session request size.price %}{% endif %}" data-discountlabel-{{data.id}}="{{size.discount}}" data-image-{{data.id}}="{{size.image}}" data-stock-{{data.id}}="{{size.quantity}}" for="{{size.size__size_code}}">{{size.size__size_code}}
+											<input class="cccl" type="radio" id="{{size.size__size_code}}">
+										</label>
+										{% endfor %}
+										
+									</div>
+								</div>
+								<div class="product__details__cart__option">
+									<div class="quantity">
+										<div class="pro-qty">
+											<input class="product-qty-{{data.id}}" type="number" value="1">
+										</div>
+									</div>
+									
+									<input type="hidden" class="product-image-{{data.id}}" value="{{data.productattribute_set.first.image}}" />
+									<input type="hidden" class="product-id-{{data.id}}" value="{{data.id}}" />
+									<input type="hidden" class="product-title-{{data.id}}" value="{{data.title}}" />
+		
+									<a href="#" class="primary-btn add-to-cart" data-index="{{data.id}}">add to cart</a>
+								</div>
+								<div class="product__details__btns__option">
+									<button class="add-wishlist" data-product="{{data.id}}"><i class="fa fa-heart"></i> add to wishlist</button>
+								</div>
+								<div class="product__details__last__option">
+									<h5><span>Guaranteed Safe Checkout</span></h5>
+									<img src="{% static 'media/images/icons/payment_options.png' %}" alt="">
+									<ul>
+										<li><span>SKU:</span><a href="/brand-product-list/{{data.brand.id}}">{{data.sku}}</a></li>
+										<li><span>Categories:</span><a href="/category-product-list/{{data.category.id}}">{{data.category}}</a></li>
+										<li><span>Tags:</span> {% for tags in product_tags %}{{tags}}, {% endfor %}</li>
+									</ul>
+								</div>
+							</div>
+						</div>
+					</div>
+
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="product__details__content">
+		<div class="container">
+			
+			<div class="row">
+				<div class="col-lg-12">
+					<div class="product__details__tab">
+						<ul class="nav nav-tabs" role="tablist">
+							<li class="nav-item">
+								<a class="nav-link active" data-toggle="tab" href="#tabs-5"
+								role="tab">Description</a>
+							</li>
+							<li class="nav-item">
+								<a class="nav-link" data-toggle="tab" href="#tabs-6" role="tab">Customer
+								Reviews</a>
+							</li>
+						</ul>
+						<div class="tab-content">
+							<div class="tab-pane active" id="tabs-5" role="tabpanel">
+								<div class="product__details__tab__content">
+									<div class="product__details__tab__content__item">
+										<h5>Products Infomation</h5>
+										<p>{{data.description | safe}}.</p>
+									</div>
+								</div>
+							</div>
+							<div class="tab-pane" id="tabs-6" role="tabpanel">
+								<div class="product__details__tab__content">
+									<div class="product__details__tab__content__item">
+										<!-- Reviews -->
+										<div class="col-md-6">
+											<h3 class="my-3">Reviews - <span class="avg-rating">{{avg_reviews.avg_rating}}</span>/5 <i class="fa fa-star text-warning"></i>
+												{% if user.is_authenticated %}
+													{% if canAdd %}
+													<button data-toggle="modal" data-target="#productReview" type="button" class="btn btn-warning btn-sm float-right reviewBtn">Add Review</button>
+													{% endif %}
+												{% endif %}
+											</h3>
+									{% if user.is_authenticated %}
+									<!-- Product Review -->
+									<div class="modal fade" id="productReview" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+									<div class="modal-dialog">
+										<div class="modal-content">
+										<div class="modal-header">
+											<h5 class="modal-title" id="exampleModalLabel">Add Product Review</h5>
+											<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+											<span aria-hidden="true">&times;</span>
+											</button>
+										</div>
+										<div class="modal-body">
+											<form method="post" id="addForm" action="{% url 'save-review' data.id %}">
+												{% csrf_token %}
+												<table class="table table-bordered">
+													{{reviewForm.as_table}}
+													<tr>
+														<td colspan="2">
+															<button type="submit" class="btn btn-primary">Submit</button>
+															<input type="reset" class="btn btn-dark" value="Reset" id="reset" />
+														</td>
+													</tr>
+												</table>
+												<p class="ajaxRes"></p>
+										</form>
+										</div>
+										</div>
+									</div>
+									</div>
+									<!-- Product Review End -->
+									{% endif %}
+									
+									</h3>
+									<div class="card">
+										<div class="card-body review-list" style="max-height: 400px; overflow: auto;">
+											<!-- Detail -->
+											{% if reviews %}
+												{% for review in reviews %}
+												<blockquote class="blockquote text-right">
+												<small>{{review.review_text}}</small>
+												<footer class="blockquote-footer">{{review.user}} 
+													<cite title="Source Title">
+														{% for star in review.review_rating|ljust:review.review_rating %}
+														<i class="fa fa-star text-warning"></i>
+														{% endfor %}
+													</cite>
+												</footer>
+												</blockquote>
+												<hr />
+												{% endfor %}
+											{% else %}
+												<p class="no-data">Add First Review</p>
+											{% endif %}
+										</div>
+									</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</section>
+<!-- Shop Details Section End -->
+
+ <!-- Related Section Begin -->
+ <section class="related spad">
+	<div class="container">
+		<div class="row">
+			<div class="col-lg-12">
+				<h3 class="related-title">Related Product</h3>
+			</div>
+		</div>
+		<div class="row">
+			{% for product in related %}
+			<div class="col-lg-3 col-md-6 col-sm-6 col-md-6 col-sm-6 mix {% if product.productattribute_set.first.sell_price != product.productattribute_set.first.price %}hot-sales{% else %}new-arrivals{% endif %}">
+				<div class="product__item sale get_product_id" data-productid="{{product.id}}">
+					<div class="product__item__pic set-bg product-home-image-{{product.id}}" data-setbg="{{product.productattribute_set.first.image.images_set.first.picture.url}}">
+						{% get_product_image product as get_image %}
+						{% for images in get_image %}
+						<div style="display: none;" class="image{{images.color__id}}{{product.id}}" data-image-{{product.id}}="{{images.image__images__picture}}"></div>
+						{% endfor %}
+						{% if product.productattribute_set.first.sell_price != product.productattribute_set.first.price %}
+						<span class="label" style="background-color: red;"><span class="product-discount-label-{{product.id}}">{{product.productattribute_set.first.discount}}</span>% off</span>
+						{% else %}
+						<span class="label">New</span>
+						{% endif %}
+						<ul class="product__hover">
+							{% if user.is_authenticated %}
+							<li><button class="add-wishlist" data-product="{{product.id}}" style="padding: 0px; border: 0px;"><img src="{% static 'media/images/icons/heart.png' %}" alt=""></button></li>
+							{% else %}
+							{% endif %}
+							<li><a href="/product/{{product.slug}}/{{product.id}}"><img src="{% static 'media/images/icons/search.png' %}" alt=""><span>View Product</span></a></li>
+						</ul>
+					</div>
+					<div class="product__item__text">
+						<h6 style="font-size: 12px; color: rgb(147, 147, 147);">{{product.category|upper}}</h6>
+						<h6>{{product.title}}</h6>
+										
+						<input type="hidden" value="1" class="form-control product-qty-{{product.id}}" id="productQty" />
+						<input type="hidden" class="product-image-{{product.id}}" value="{{product.productattribute_set.first.image}}" />
+						<input type="hidden" class="product-id-{{product.id}}" value="{{product.id}}" />
+						<input type="hidden" class="product-title-{{product.id}}" value="{{product.title}}" />
+						<button class="add-cart add-to-cart" data-index="{{product.id}}">+ Add To Cart</button>
+						<div class="rating">
+							{% get_avg_product_rating product as avg_reviews %}
+							{% if avg_reviews.avg_rating == None %}
+							<i class="fa fa-star-o"></i>
+							<i class="fa fa-star-o"></i>
+							<i class="fa fa-star-o"></i>
+							<i class="fa fa-star-o"></i>
+							<i class="fa fa-star-o"></i>
+							<i class="fa fa-star-i"></i>							
+							{% elif avg_reviews.avg_rating == 1 %}
+							<i class="fa fa-star"></i>
+							<i class="fa fa-star-o"></i>
+							<i class="fa fa-star-o"></i>
+							<i class="fa fa-star-o"></i>
+							<i class="fa fa-star-o"></i>
+							<i class="fa fa-star-i"></i>	
+							{% elif avg_reviews.avg_rating == 2 %}
+							<i class="fa fa-star"></i>
+							<i class="fa fa-star"></i>
+							<i class="fa fa-star-o"></i>
+							<i class="fa fa-star-o"></i>
+							<i class="fa fa-star-o"></i>
+							<i class="fa fa-star-i"></i>	
+							{% elif avg_reviews.avg_rating == 3 %}
+							<i class="fa fa-star"></i>
+							<i class="fa fa-star"></i>
+							<i class="fa fa-star"></i>
+							<i class="fa fa-star-o"></i>
+							<i class="fa fa-star-o"></i>
+							<i class="fa fa-star-i"></i>	
+							{% elif avg_reviews.avg_rating == 4 %}
+							<i class="fa fa-star"></i>
+							<i class="fa fa-star"></i>
+							<i class="fa fa-star"></i>
+							<i class="fa fa-star"></i>
+							<i class="fa fa-star-o"></i>
+							<i class="fa fa-star-i"></i>	
+							{% elif avg_reviews.avg_rating == 5 %}
+							<i class="fa fa-star"></i>
+							<i class="fa fa-star"></i>
+							<i class="fa fa-star"></i>
+							<i class="fa fa-star"></i>
+							<i class="fa fa-star"></i>
+							<i class="fa fa-star-i"></i>	
+							{% endif %}
+						</div>
+						<h5>
+							<span class="product-price-{{product.id}}">
+								{% if user.is_authenticated %}
+									{% get_price user product.productattribute_set.first.price product.productattribute_set.first.discount %}
+								{% else %}
+									{% get_price_session request product.productattribute_set.first.price product.productattribute_set.first.discount %}
+								{% endif %}
+							</span>
+							{% if product.productattribute_set.first.discount == 0 %}
+							{% else %}
+							<span class="product-discount-{{product.id}}" style="text-decoration: line-through; font-size: 20px; font-weight: 400; color: #b7b7b7; padding-left: 8px;">
+								{% if user.is_authenticated %}
+									{% get_discount_price user product.productattribute_set.first.price %}
+								{% else %}
+									{% get_discount_price_session request product.productattribute_set.first.price %}
+								{% endif %}
+							</span>
+							{% endif %}
+						</h5>
+	
+						<div class="product__color__select">
+							{% get_product_color product.id as product_colors %}
+							{% for color in product_colors%}
+								<label class="choose-color" data-color="{{color.color__id}}" style="background-color: {{color.color__color_code}}" for="sp-1">
+									<input type="radio" id="{{color.color__color_code}}">
+								</label>
+							{% endfor %}
+							
+						<div class="product__size__select">  
+							{% get_product_size product.id as product_sizes %}
+							{% for size in product_sizes %}
+							<label class="choose-size color{{size.color__id}}" data-size="{{size.size__id}}" data-price-{{product.id}}="{% if user.is_authenticated %}{% get_price user size.price size.discount %}{% else %}{% get_price_session request size.price size.discount %}{% endif %}" data-discount-{{product.id}}="{% if user.is_authenticated %}{% get_discount_price user size.price %}{% else %}{% get_discount_price_session request size.price %}{% endif %}" data-discountlabel-{{product.id}}="{{size.discount}}" for="{{size.size__size_code}}">{{size.size__size_code}}
+								<input type="radio" id="{{size.size__size_code}}">
+							</label>
+							{% endfor %}
+						</div>
+						</div>
+					</div>
+				</div>
+			</div> 
+			{% endfor %}
+		</div>
+	</div>
+</section>
+<!-- Related Section End -->
+
+<!-- Image Zoom -->
+<script src="{% static 'jquery.ez-plus.js' %}"></script>
+<script type="text/javascript">
+    $('#zoom_01').ezPlus();
+</script>
+
+<!-- Add To Cart -->
+<script src="{% static 'custom.js' %}"></script>
+
+{% endblock %}

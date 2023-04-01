@@ -1,0 +1,119 @@
+{% extends 'includes/base.html' %}
+{% load custom_tags %}
+{% load static %}
+{% block content %}
+
+ <!-- Breadcrumb Section Begin -->
+ <section class="breadcrumb-option">
+	<div class="container">
+		<div class="row">
+			<div class="col-lg-12">
+				<div class="breadcrumb__text">
+					<h4>Checkout</h4>
+					<div class="breadcrumb__links">
+						<a href="/">Home</a>
+						<a href="{% url 'cart' %}">Cart</a>
+						<span>Checkout</span>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</section>
+<!-- Breadcrumb Section End -->
+
+<!-- Checkout Section Begin -->
+<section class="checkout spad">
+	<div class="container">
+		<div class="checkout__form">
+				<div class="row">
+					<div class="col-lg-12 col-md-12">
+						<h6 class="coupon__code">Free Delivery for orders more than {% currency_converter user 1115 %}</h6>
+						<h6 class="checkout__title">Select Address</h6>
+						<div class="row">						
+							{% for add in addbook %}
+							<div class="col-md-4">
+								<div class="card mb-3 {% if add.status %}border-secondary shadow{% endif %} address{{add.id}} address">
+									<div class="card-body">
+										<p class="card-text">{{add.country}}</p>
+										<p class="card-text">{{add.address}}</p>
+										<p class="card-text">{{add.mobile}}</p>
+									</div>
+									{% if add.status %}
+									<div class="card-footer">
+										<i class="fa fa-check-circle text-success check{{add.id}} check"></i>
+										<button style="display:none;" data-address="{{add.id}}" class="btn btn-sm btn-info activate-address btn{{add.id}} actbtn">Select</button>
+										
+									</div>
+									{% else %}
+									<div class="card-footer footer{{add.id}}">
+										<i style="display:none;" class="fa fa-check-circle text-success check{{add.id}} check"></i>
+										<button data-address="{{add.id}}" class="btn btn-sm btn-info activate-address btn{{add.id}} actbtn">Select</button>
+										
+									</div>
+									{% endif %}
+								</div>
+							</div>
+							{% endfor %}
+							<div class="col-md-4">
+								<div class="card mb-3">
+									<a href="{% url 'add-address' %}" style="color: black;">
+									<div class="card-body d-flex aligns-items-center justify-content-center">
+										<svg xmlns="http://www.w3.org/2000/svg" width="136" height="136" fill="currentColor" class="bi bi-plus-lg" viewBox="0 0 16 16">
+											<path fill-rule="evenodd" d="M8 2a.5.5 0 0 1 .5.5v5h5a.5.5 0 0 1 0 1h-5v5a.5.5 0 0 1-1 0v-5h-5a.5.5 0 0 1 0-1h5v-5A.5.5 0 0 1 8 2Z"/>
+										  </svg><br>
+									</div>
+									</a>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="col-lg-12 col-md-12">
+						<div class="checkout__order">
+							<h4 class="order__title">Your order</h4>		
+							<div class="checkout__table">	
+							<table>
+								<thead>
+									<tr>
+										<th class="product__name">Product</th>
+										<th class="table__right">Qty</th>
+										<th class="table__right">Price</th>
+										<th class="table__right">Total</th>
+									</tr>
+								</thead>
+								<tbody>
+									{% for item in cart_items %}
+									{% multiplier item.product_attribute.sell_price item.qty as sell_prices %}
+									<tr>
+										<td class="product__name">0{{forloop.counter}}. {{item.product_attribute.product.title}} - {{item.product_attribute.color}} - {{item.product_attribute.size.size_code}}</td>
+										<td class="table__right">{{item.qty}}</td>
+										<td class="table__right">{% currency_converter user sell_prices %}</td>
+										<td class="table__right">{% currency_converter user item.product_attribute.sell_price %}</td>
+									</tr>
+									{% endfor %}
+								</tbody>
+							</table>
+							</div>
+							<ul class="checkout__total__all">
+								<li>Delivery Cost <span class="address-cost">{% currency_converter user address_cost %}</span></li>
+								<li>Product Total <span>{% currency_converter user total_amt %}</span></li>
+								<li>Total <span>{% currency_converter user total_amts %}</span></li>
+							</ul>
+							{% if total_amt %}
+							<form action="{% url 'create-checkout-session' %}" method="POST">
+								{% csrf_token %}
+								<button type="submit" class="site-btn">PAY WITH STRIPE</button>
+							</form>
+							<p style="text-align: center; margin-top: 5px; margin-bottom: 0px;">or</p>
+							{{form.render}}
+							{% endif %}
+						</div>
+					</div>
+				</div>
+		</div>
+	</div>
+</section>
+<!-- Checkout Section End -->
+
+
+{% endblock %}
