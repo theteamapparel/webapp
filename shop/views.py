@@ -556,7 +556,7 @@ def payment_processing(request):
 	message = "\n".join(body.values())
 	try:
 		msg_html= render_to_string('email_template/order_placed_email_template.html', {'name':user_email, 'inv_no':inv_no})
-		send_mail(subject, message, settings.EMAIL_FROM, email_to, html_message=msg_html) 
+		send_mail(subject, message, settings.EMAIL_FROM, email_to, html_message=msg_html,fail_silently=True) 
 	except BadHeaderError:
 		return HttpResponse('Invalid header found.')
 	
@@ -612,7 +612,7 @@ def contact(request):
 			message = "\n".join(body.values())
 
 			try:
-				send_mail(subject, message, settings.EMAIL_FROM, email_to) 
+				send_mail(subject, message, settings.EMAIL_FROM, email_to, fail_silently=False) 
 				messages.success(request, "Message Sent Successfully. Will get back to you shortly")
 			except BadHeaderError:
 				return HttpResponse('Invalid header found.')

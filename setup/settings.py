@@ -48,7 +48,7 @@ SECURE_HSTS_PRELOAD = True
 SECURE_CONTENT_TYPE_NOSNIFF = True
 # SECURITY WARNING: don't run with debug turned on in production!
 
-ALLOWED_HOSTS = ['www.theteamapparel.com', '191.101.81.148','theteamapparel.com']
+ALLOWED_HOSTS = ['191.101.81.148']
 CSRF_TRUSTED_ORIGINS = [WEBSITE_ADDRESS]
 
 STATIC_ROOT = os.path.join(BASE_DIR, 'static/')
