@@ -240,7 +240,7 @@ class CartOrder(models.Model):
             elif self.order_status == "delivered":
                 msg_html=render_to_string('email_template/order_delivered_email_template.html',{'inv_no':inv_no})    
             try:
-                send_mail(subject, message, settings.EMAIL_FROM, [email], html_message=msg_html, fail_silently=True) 
+                send_mail(subject, message, settings.EMAIL_FROM, [email], html_message=msg_html, fail_silently=False) 
             except BadHeaderError:
                 return HttpResponse('Invalid header found.')
         super().save(force_insert, force_update, *args, **kwargs)
