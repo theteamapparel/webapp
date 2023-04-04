@@ -12,7 +12,10 @@ from django.template.loader import render_to_string
 from .forms import ReviewAdd,AddressBookForm,ProfileForm,ContactForm
 from django.contrib.auth.decorators import login_required
 from django.core.mail import send_mail, BadHeaderError
+from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
+from django.utils.encoding import force_bytes, force_str
 #paypal
+from users.tokens import account_activation_token
 from django.urls import reverse
 from django.conf import settings
 from django.views.decorators.csrf import csrf_exempt
@@ -418,14 +421,16 @@ def checkout(request):
 	if str(CustomUser.objects.get(username=user).currency) not in available_currencies:
 		selected_currency = 'USD'
 	# Process Payment
+	token = account_activation_token.make_token(user)
 	host = request.get_host()
+	domain = settings.WEBSITE_ADDRESS
 	paypal_dict = {
 		'business': settings.PAYPAL_RECEIVER_EMAIL,
 		'amount': total_amts,
 		'item_name': 'Total',
 		'currency_code': selected_currency,
 		'notify_url': 'http://{}{}'.format(host,reverse('paypal-ipn')),
-		'return_url': 'http://{}{}'.format(host,reverse('payment_processing')),
+		'return_url': domain + '/payment-processing/' + token,
 		'cancel_return': 'http://{}{}'.format(host,reverse('payment_cancelled')),
 	}
 	form = PayPalPaymentsForm(initial=paypal_dict)
@@ -483,8 +488,10 @@ def CreateCheckoutSessionView(request):
 							'unit_amount': shipping_cost
 						},
 						'quantity': 1, 
-					})						 
-				
+					})	
+									 
+				token = account_activation_token.make_token(user)
+
 				domain = settings.WEBSITE_ADDRESS
 				if settings.DEBUG:
 					domain = settings.WEBSITE_ADDRESS
@@ -492,75 +499,79 @@ def CreateCheckoutSessionView(request):
 					payment_method_types=['card'],
 					line_items=line_items_list,
 					mode='payment',
-					success_url=domain + '/payment-processing/',
+					success_url=domain + '/payment-processing/' + token,
 					cancel_url=domain + '/payment-cancelled/',
 				)
 				return redirect(checkout_session.url)
 
 @login_required
-def payment_processing(request):
+def payment_processing(request, token):
 	user=request.user
-	cart_items = Cart.objects.filter(user=user)
-	total_amt=0
-	for item in cart_items: 
-		total_amt+=item.qty*item.product_attribute.sell_price
-	
-	shipping_cost = 25
-	if total_amt > 1115:
-		shipping_cost = 0
-	else: 
-		shipping_cost = UserAddressBook.objects.filter(user=request.user).filter(status=True)[0].country.delivery_price
-	# Order
-	order=CartOrder.objects.create(
-			user=request.user,
-			total_amt=total_amt+shipping_cost,
-			address=UserAddressBook.objects.filter(user=request.user).filter(status=True)[0],
-			paid_status=True,
+	if account_activation_token.check_token(user, token):
+		cart_items = Cart.objects.filter(user=user)
+		total_amt=0
+		for item in cart_items: 
+			total_amt+=item.qty*item.product_attribute.sell_price
+		
+		shipping_cost = 25
+		if total_amt > 1115:
+			shipping_cost = 0
+		else: 
+			shipping_cost = UserAddressBook.objects.filter(user=request.user).filter(status=True)[0].country.delivery_price
+		# Order
+		order=CartOrder.objects.create(
+				user=request.user,
+				total_amt=total_amt+shipping_cost,
+				address=UserAddressBook.objects.filter(user=request.user).filter(status=True)[0],
+				paid_status=True,
 
-		)
-	order.save()
-	inv_no = order.id
-	# End
-	for item in cart_items: 
-		# OrderItems
-		product_attribute = ProductAttribute.objects.get(id=item.product_attribute.id)
-		cart_item_qty = item.qty
-		product_attribute.quantity = product_attribute.quantity - cart_item_qty
-		product_attribute.save()
-		items=CartOrderItems.objects.create(
-			order=order,
-			invoice_no='INV-'+str(order.id),
-			item=item.product_attribute.product.title,
-			image=item.product_attribute.image,
-			color=item.product_attribute.color,
-			size=item.product_attribute.size,
-			qty=item.qty,
-			price=item.product_attribute.sell_price + shipping_cost,
-			total=float(item.qty)*item.product_attribute.sell_price
 			)
+		order.save()
+		inv_no = order.id
 		# End
-	cart_items.delete()
-	
-	name=request.user.username
-	user_email = request.user.email
-	staff_mail = CustomUser.objects.filter(is_staff=True)
-	email_to = [user_email,]
-	for emails in staff_mail:
-		email_to.append(emails.email)
-	subject = "Order Placed" 
-	body = { 
-	'name': name,
-	'email': user_email, 
-	'message':"your order has been placed",
-	}
-	message = "\n".join(body.values())
-	try:
-		msg_html= render_to_string('email_template/order_placed_email_template.html', {'name':user_email, 'inv_no':inv_no})
-		send_mail(subject, message, settings.EMAIL_FROM, email_to, html_message=msg_html,fail_silently=True) 
-	except BadHeaderError:
-		return HttpResponse('Invalid header found.')
-	
-	return redirect(payment_done)
+		for item in cart_items: 
+			# OrderItems
+			product_attribute = ProductAttribute.objects.get(id=item.product_attribute.id)
+			cart_item_qty = item.qty
+			product_attribute.quantity = product_attribute.quantity - cart_item_qty
+			product_attribute.save()
+			items=CartOrderItems.objects.create(
+				order=order,
+				invoice_no='INV-'+str(order.id),
+				item=item.product_attribute.product.title,
+				image=item.product_attribute.image,
+				color=item.product_attribute.color,
+				size=item.product_attribute.size,
+				qty=item.qty,
+				price=item.product_attribute.sell_price + shipping_cost,
+				total=float(item.qty)*item.product_attribute.sell_price
+				)
+			# End
+		cart_items.delete()
+		
+		name=request.user.username
+		user_email = request.user.email
+		staff_mail = CustomUser.objects.filter(is_staff=True)
+		email_to = [user_email,]
+		for emails in staff_mail:
+			email_to.append(emails.email)
+		subject = "Order Placed" 
+		body = { 
+		'name': name,
+		'email': user_email, 
+		'message':"your order has been placed",
+		}
+		message = "\n".join(body.values())
+		try:
+			msg_html= render_to_string('email_template/order_placed_email_template.html', {'name':user_email, 'inv_no':inv_no})
+			send_mail(subject, message, settings.EMAIL_FROM, email_to, html_message=msg_html,fail_silently=True) 
+		except BadHeaderError:
+			return HttpResponse('Invalid header found.')
+		return redirect(payment_done)
+	else:
+		messages.error(request, "Invalid Payment Link!")
+
+	return redirect(payment_canceled)
 
 @csrf_exempt
 def payment_done(request):

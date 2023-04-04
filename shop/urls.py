@@ -26,7 +26,7 @@ urlpatterns=[
     path('create-checkout-session/', views.CreateCheckoutSessionView, name='create-checkout-session'),
     #path('paypal-create-checkout-session/', views.PaypalCreateCheckoutSessionView, name='paypal-create-checkout-session'),
     path('paypal/', include('paypal.standard.ipn.urls')),
-    path('payment-processing/', views.payment_processing, name='payment_processing'),
+    path('payment-processing/<token>', views.payment_processing, name='payment_processing'),
     path('payment-done/', views.payment_done, name='payment_done'),
     path('payment-cancelled/', views.payment_canceled, name='payment_cancelled'),
     path('save-review/<int:pid>',views.save_review, name='save-review'),
