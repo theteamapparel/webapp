@@ -429,9 +429,9 @@ def checkout(request):
 		'amount': total_amts,
 		'item_name': 'Total',
 		'currency_code': selected_currency,
-		'notify_url': 'http://{}{}'.format(host,reverse('paypal-ipn')),
+		'notify_url': 'https://{}{}'.format(host,reverse('paypal-ipn')),
 		'return_url': domain + '/payment-processing/' + token,
-		'cancel_return': 'http://{}{}'.format(host,reverse('payment_cancelled')),
+		'cancel_return': 'https://{}{}'.format(host,reverse('payment_cancelled')),
 	}
 	form = PayPalPaymentsForm(initial=paypal_dict)
 	
