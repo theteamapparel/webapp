@@ -14,7 +14,7 @@ import os
 from pathlib import Path
 
 
-WEBSITE_ADDRESS="https://theteamapparel.com"
+WEBSITE_ADDRESS="http://127.0.0.1:8000"
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -28,7 +28,7 @@ STRIPE_SECRET_KEY = "sk_test_51Mbmz4KirxGofcWOACWtmfzzvdvivYtqMeMqg3ggZW1RB4BVMi
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = 'wdjnwu£$"2ERSs2£$-RFRFwssfrkalkemeqw@de=+==3=%443£$212£"1ja#ddwdwss@ideow!!%£"%$£fgrg**^"£"ESEes~sa~E~%5~'
 # security.W018
-DEBUG = False
+DEBUG = True
 
 # security.W016
 CSRF_COOKIE_SECURE = True
@@ -37,18 +37,12 @@ CSRF_COOKIE_SECURE = True
 SESSION_COOKIE_SECURE = True
 
 # security.W008
-SECURE_SSL_REDIRECT = True
+SECURE_SSL_REDIRECT = False
 
 # security.W004
 SECURE_HSTS_SECONDS = 31536000 # One year in seconds
 
-# Another security settings
-SECURE_HSTS_INCLUDE_SUBDOMAINS = True
-SECURE_HSTS_PRELOAD = True
-SECURE_CONTENT_TYPE_NOSNIFF = True
-# SECURITY WARNING: don't run with debug turned on in production!
-
-ALLOWED_HOSTS = ['theteamapparel.com','www.theteamapparel.com']
+ALLOWED_HOSTS = ['*']
 CSRF_TRUSTED_ORIGINS = [WEBSITE_ADDRESS]
 
 STATIC_ROOT = os.path.join(BASE_DIR, 'static/')
@@ -76,7 +70,8 @@ INSTALLED_APPS = [
     'allauth.account',
     'allauth.socialaccount',
     'allauth.socialaccount.providers.google',
-    'paypal.standard.ipn'
+    'paypal.standard.ipn',
+    'anymail'
 ]
 
 X_FRAME_OPTIONS = "SAMEORIGIN"
@@ -165,7 +160,7 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
         'NAME': 'theteamapparel',
-        'USER': 'theteamapparel',
+        'USER': 'postgres',
         'PASSWORD': 'theteamapparel123',
         'HOST': 'localhost',
         'PORT': '5432',
@@ -241,7 +236,6 @@ SILENCED_SYSTEM_CHECKS = ['captcha.recaptcha_test_key_error']
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 MEDIA_URL = '/media/'
 
-# Emailing settings
 # Emailing settings
 EMAIL_FROM = 'theteamapparel.website@gmail.com'
 EMAIL_BACKEND = "anymail.backends.sendinblue.EmailBackend"
