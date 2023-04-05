@@ -14,13 +14,13 @@ import os
 from pathlib import Path
 
 
-WEBSITE_ADDRESS="http://127.0.0.1:8000"
+WEBSITE_ADDRESS="https://theteamapparel.com"
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 # stripe keys
-STRIPE_PUBLIC_KEY = "pk_test_51Mbmz4KirxGofcWOsXQOR6a2c70rMKwZfc0UIXvI6xAPRubgLANtnT8tc3uTifCpSUjXPImaV8ub4IukXdx8HaJe009Vi4k3G5"
-STRIPE_SECRET_KEY = "sk_test_51Mbmz4KirxGofcWOACWtmfzzvdvivYtqMeMqg3ggZW1RB4BVMiNm1tUWKBnLd5NRMuwLOnHZHXzsZc0Na0L9FaqD00G7t91Ti6"
+STRIPE_PUBLIC_KEY = ""
+STRIPE_SECRET_KEY = ""
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.1/howto/deployment/checklist/
@@ -28,7 +28,7 @@ STRIPE_SECRET_KEY = "sk_test_51Mbmz4KirxGofcWOACWtmfzzvdvivYtqMeMqg3ggZW1RB4BVMi
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = 'wdjnwu£$"2ERSs2£$-RFRFwssfrkalkemeqw@de=+==3=%443£$212£"1ja#ddwdwss@ideow!!%£"%$£fgrg**^"£"ESEes~sa~E~%5~'
 # security.W018
-DEBUG = True
+DEBUG = False
 
 # security.W016
 CSRF_COOKIE_SECURE = True
@@ -37,12 +37,12 @@ CSRF_COOKIE_SECURE = True
 SESSION_COOKIE_SECURE = True
 
 # security.W008
-SECURE_SSL_REDIRECT = False
+SECURE_SSL_REDIRECT = True
 
 # security.W004
 SECURE_HSTS_SECONDS = 31536000 # One year in seconds
 
-ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = ["theteamappare.com","www.theteamapparel.com"]
 CSRF_TRUSTED_ORIGINS = [WEBSITE_ADDRESS]
 
 STATIC_ROOT = os.path.join(BASE_DIR, 'static/')
@@ -160,7 +160,7 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
         'NAME': 'theteamapparel',
-        'USER': 'postgres',
+        'USER': 'theteamapparel',
         'PASSWORD': 'theteamapparel123',
         'HOST': 'localhost',
         'PORT': '5432',
@@ -191,7 +191,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'Etc/GMT+4'
 
 USE_I18N = True
 
@@ -240,7 +240,7 @@ MEDIA_URL = '/media/'
 EMAIL_FROM = 'theteamapparel.website@gmail.com'
 EMAIL_BACKEND = "anymail.backends.sendinblue.EmailBackend"
 ANYMAIL = {
-    "SENDINBLUE_API_KEY": "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",
+    "SENDINBLUE_API_KEY": "",
 }
 
 PASSWORD_RESET_TIMEOUT = 14400
