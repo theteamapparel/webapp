@@ -91,7 +91,7 @@ def brand_product_list(request,brand_id):
 def product_detail(request,slug,id):
 	product=Product.objects.get(id=id)
 	related_products=Product.objects.filter(category=product.category).exclude(id=id)[:4]
-	colors=ProductAttribute.objects.filter(product=product).filter(quantity__gt=0).values('color__id','color__title','color__color_code','quantity').distinct()
+	colors=ProductAttribute.objects.filter(product=product).filter(quantity__gt=0).values('color__id','color__title','color__color_code').distinct()
 	sizes=ProductAttribute.objects.filter(product=product).filter(quantity__gt=0).values('size__id','size__title','size__size_code','price','discount','color__id','image','quantity').distinct()
 	product_pictures=ProductAttribute.objects.filter(product=product).filter(quantity__gt=0).values('image__images__picture','color__id').distinct()
 	product_tags=ProductTag.objects.filter(product=product)

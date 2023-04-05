@@ -1120,15 +1120,15 @@ ol {
 	width: 12px;
 	border-radius: 50%;
 	margin-bottom: 0;
-	margin-right: 5px;
 	position: relative;
 	cursor: pointer;
 }
 .product__item__text .product__color__select .product__size__select label {
+	font-size: 12px;
+	font-weight: 600;
 	display: inline-block;
 	height: 12px;
-	width: 12px;
-	margin-right: 5px;
+	width: 20px;
 	position: relative;
 	cursor: pointer;
 }
