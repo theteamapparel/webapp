@@ -42,7 +42,7 @@ SECURE_SSL_REDIRECT = True
 # security.W004
 SECURE_HSTS_SECONDS = 31536000 # One year in seconds
 
-ALLOWED_HOSTS = ["theteamappare.com","www.theteamapparel.com"]
+ALLOWED_HOSTS = ["theteamapparel.com","www.theteamapparel.com"]
 CSRF_TRUSTED_ORIGINS = [WEBSITE_ADDRESS]
 
 STATIC_ROOT = os.path.join(BASE_DIR, 'static/')
