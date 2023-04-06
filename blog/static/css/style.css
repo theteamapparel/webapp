@@ -1115,6 +1115,7 @@ ol {
 }
 
 .product__item__text .product__color__select label {
+	border: 1px solid black;
 	display: inline-block;
 	height: 12px;
 	width: 12px;
@@ -1124,11 +1125,12 @@ ol {
 	cursor: pointer;
 }
 .product__item__text .product__color__select .product__size__select label {
+	border: 0px;
 	font-size: 12px;
 	font-weight: 600;
 	display: inline-block;
 	height: 12px;
-	width: 20px;
+	width: 22px;
 	position: relative;
 	cursor: pointer;
 }
