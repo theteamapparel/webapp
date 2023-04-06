@@ -217,7 +217,7 @@ def password_reset_request(request):
         form = PasswordResetForm(request.POST)
         if form.is_valid():
             user_email = form.cleaned_data['email']
-            associated_user = get_user_model().objects.filter(Q(email=user_email)).first()
+            associated_user = get_user_model().objects.filter(Q(email__iexact=user_email)).first()
             if associated_user:
                 subject = "Password Reset request"
                 message = render_to_string("template_reset_password.html", {
@@ -241,6 +241,9 @@ def password_reset_request(request):
                     )
                 except:
                     messages.error(request, "Problem sending reset password email, <b>SERVER PROBLEM</b>")
+            else:
+                messages.error(request, "Email address does not exist")
+                return redirect('password_reset')
             return redirect('home')
 
         for key, error in list(form.errors.items()):
