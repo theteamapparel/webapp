@@ -237,7 +237,7 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 MEDIA_URL = '/media/'
 
 # Emailing settings
-EMAIL_FROM = 'theteamapparel.website@gmail.com'
+EMAIL_FROM = 'support@theteamapparel.com'
 EMAIL_BACKEND = "anymail.backends.sendinblue.EmailBackend"
 ANYMAIL = {
     "SENDINBLUE_API_KEY": "",
