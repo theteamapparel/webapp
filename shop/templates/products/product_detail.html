@@ -391,7 +391,7 @@
 							{% get_product_color product.id as product_colors %}
 							{% for color in product_colors%}
 								<label class="choose-color" data-color="{{color.color__id}}" style="background-color: {{color.color__color_code}}" for="sp-1">
-									<input type="radio" id="{{color.color__color_code}}">
+									<input type="radio">
 								</label>
 							{% endfor %}
 							
@@ -399,7 +399,7 @@
 							{% get_product_size product.id as product_sizes %}
 							{% for size in product_sizes %}
 							<label class="choose-size color{{size.color__id}}" data-size="{{size.size__id}}" data-price-{{product.id}}="{% if user.is_authenticated %}{% get_price user size.price size.discount %}{% else %}{% get_price_session request size.price size.discount %}{% endif %}" data-discount-{{product.id}}="{% if user.is_authenticated %}{% get_discount_price user size.price %}{% else %}{% get_discount_price_session request size.price %}{% endif %}" data-discountlabel-{{product.id}}="{{size.discount}}" for="{{size.size__size_code}}">{{size.size__size_code}}
-								<input type="radio" id="{{size.size__size_code}}">
+								<input type="radio">
 							</label>
 							{% endfor %}
 						</div>

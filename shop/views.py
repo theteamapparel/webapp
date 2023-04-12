@@ -52,7 +52,7 @@ def brand_list(request):
 # Product List
 def product_list(request):
 	total_data=Product.objects.count()
-	data=Product.objects.all().order_by('-id')[:3]
+	data=Product.objects.all().order_by('-id')[:8]
 	min_price=ProductAttribute.objects.aggregate(Min('price'))
 	max_price=ProductAttribute.objects.aggregate(Max('price'))
 	return render(request,'products/product_list.html',

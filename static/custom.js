@@ -148,6 +148,8 @@ $(document).ready(function(){
 
 	// set all to 0
 	$(document).on('mouseleave',".get_product_id",function(){
+		$(".choose-size").removeClass('active');
+		$(".choose-color").removeClass('focused');
 		selected_color=0;
 		selected_size=0;
 		selected_product = 0;
